@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResumeInTwo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--k:#111;--g:#666;--l:#d8d8d8}
+*{box-sizing:border-box}
+body{margin:0;font:14px Inter,Arial,sans-serif;color:var(--k);background:#fff}
+button,input,textarea{font:inherit;color:inherit}
+.tb{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--l)}
+.bar{display:flex;align-items:center;gap:16px;padding:12px 28px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:19px;margin-right:auto;letter-spacing:-.4px}
+.cs{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--g)}
+.btn{border:1.5px solid var(--k);background:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:500;transition:transform .2s,background .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);background:#eee;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.btn.p{background:var(--k);color:#fff}.btn.p:hover{background:#333}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.pg{display:flex;gap:12px;align-items:center;padding:0 28px 10px;font-size:12px;color:var(--g)}
+.tr{flex:1;height:5px;background:#e5e5e5;border-radius:3px;overflow:hidden}.fl{height:100%;width:0;background:var(--k);transition:width .4s ease}
+.msg{padding:0 28px 8px;font-size:12px;color:var(--g);display:none}
+/* landing */
+.land{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;padding:70px 28px 60px;max-width:1240px;margin:0 auto;align-items:center}
+.land h1{font-size:clamp(34px,5vw,58px);line-height:1.04;letter-spacing:-1.8px;margin:0 0 20px}
+.hi{font-size:17px;color:var(--g);margin:0}
+.steps{display:flex;gap:10px;margin:26px 0;flex-wrap:wrap}.steps div{border:1.5px solid var(--k);border-radius:8px;padding:10px 14px;font-weight:600;transition:transform .2s}.steps div:hover{transform:translateY(-2px)}
+.big{padding:16px 30px;font-size:16px}
+.trust{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;font-size:12.5px;color:var(--g)}.trust b{color:var(--k);display:block;font-size:13.5px}
+.mbox{height:500px;overflow:hidden;border:1px solid var(--l);box-shadow:0 20px 50px rgba(0,0,0,.16)}
+.bl{color:#2563EB}.land .btn.p{background:#2563EB;border-color:#2563EB}.land .btn.p:hover{background:#1D4ED8}
+.steps i{font-style:normal;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#2563EB;color:#fff;font-size:12px;margin-right:8px}
+.trust span{border-left:3px solid #2563EB;padding-left:10px}
+.ft{background:#000;color:#fff;text-align:center;padding:28px 16px;line-height:1.8}.ft a{color:#fff;border:1.5px solid #2563EB;border-radius:6px;padding:4px 12px;display:inline-block;margin-top:4px}
+#dl{background:#2563EB;border-color:#2563EB;color:#fff}#dl:hover{background:#1D4ED8}
+.hb{font-weight:800;font-size:18px;letter-spacing:-.4px;margin-bottom:18px}
+#intro{position:fixed;inset:0;z-index:100;background:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .25s ease}
+#intro.out{opacity:0;pointer-events:none}
+.iw{text-align:center}.iname{font-size:clamp(40px,10vw,92px);font-weight:800;letter-spacing:-2px;line-height:1;white-space:nowrap}
+.iname span{position:relative;color:#000;display:inline-block}
+.iname span:after{content:attr(data-c);position:absolute;left:0;top:0;color:#2563EB;width:0;overflow:hidden;transition:width .09s linear}
+.iname span.on:after{width:100%}
+.ib{width:min(260px,60vw);height:4px;background:#e5e5e5;border-radius:2px;margin:22px auto 0;overflow:hidden}.ib i{display:block;height:100%;width:0;background:#2563EB;transition:width .09s linear}
+body.pre>*:not(#intro){opacity:0}body>*{transition:opacity .3s ease}
+/* builder */
+.app{display:grid;grid-template-columns:minmax(360px,480px) 1fr;background:#e6e6e6;border-top:1px solid var(--l)}
+.form{background:#f5f5f5;padding:24px;max-height:calc(100vh - 78px);overflow:auto;position:sticky;top:78px;align-self:start}
+.pv{padding:26px;min-width:0}
+h3.t{font-size:13px;text-transform:uppercase;letter-spacing:1px;margin:0 0 10px}h3.t:before{content:"";display:inline-block;width:8px;height:8px;background:var(--k);margin-right:8px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.fc{display:flex;gap:10px;align-items:center;text-align:left;background:#fff;border:1.5px solid #111;border-radius:10px;padding:10px;cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
+.fc:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.12)}
+.fc.on{box-shadow:0 0 0 1.5px #111;background:#f7f7f7}.fc .ic{color:#2563EB}
+.ic{flex:none;width:34px;height:34px;border:1.5px solid currentColor;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:16px}
+.fc b{display:block;font-size:12.5px}.fc small{font-size:10.5px;opacity:.7;line-height:1.2;display:block}
+label{display:block;font-size:12px;color:var(--g);margin:10px 0 4px}
+input[type=text],input[type=email],textarea{width:100%;padding:9px 11px;border:1.5px solid var(--l);border-radius:8px;background:#fff;transition:border-color .2s}
+input:focus,textarea:focus{outline:0;border-color:var(--k)}textarea{resize:vertical;min-height:64px}
+.note{font-size:12px;color:var(--g);margin:6px 0 0}
+.tools{display:flex;gap:8px;margin:14px 0}
+.sec{border-top:1px solid var(--l);margin-top:10px}
+.sec>button{width:100%;display:flex;align-items:center;gap:8px;background:none;border:0;padding:12px 0;font-weight:700;cursor:pointer;text-align:left}
+.sec>button:before{content:"";width:8px;height:8px;background:var(--k)}
+.sec .ar{margin-left:auto;transition:transform .25s}.sec.open .ar{transform:rotate(90deg)}
+.tk{width:18px;height:18px;border-radius:50%;background:var(--k);opacity:0;transform:scale(.5);transition:.25s;position:relative}
+.tk:after{content:"";position:absolute;left:6px;top:3px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.done .tk{opacity:1;transform:none}
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}.sec.open .body{grid-template-rows:1fr}.body>div{overflow:hidden}
+.entry{border:1.5px solid var(--l);border-radius:10px;padding:4px 12px 12px;margin-bottom:10px;background:#fff}
+.hd2{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:700}
+.link{background:none;border:0;cursor:pointer;text-decoration:underline;color:var(--g)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.chk{display:flex;gap:6px;align-items:center;margin-top:10px;color:var(--k)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tag{display:inline-flex;gap:6px;align-items:center;background:var(--k);color:#fff;border-radius:4px;padding:3px 8px;font-size:12px}.tag button{border:0;background:none;color:#fff;cursor:pointer;padding:0}
+.sug{border:1px dashed #888;background:#fff;border-radius:4px;padding:3px 8px;font-size:12px;cursor:pointer;transition:transform .2s,background .2s}.sug:hover{background:#eee;transform:translateY(-1px)}
+/* preview side */
+.ats{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--l);border-radius:10px;padding:12px 16px;margin-bottom:16px}
+.ats b{font-size:22px;color:#2563EB}.ats span{color:var(--g);font-size:12.5px}.ats .sv{margin-left:auto;font-size:11px}
+.stage{transition:opacity .25s,transform .25s}.stage.sw{opacity:0;transform:translateX(18px)}
+.paper{width:fit-content;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,.18);transition:transform .25s,box-shadow .25s}
+.paper:hover{transform:scale(1.01);box-shadow:0 16px 44px rgba(0,0,0,.26)}
+.done2{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .25s;z-index:60}.done2.show{opacity:1}
+.done2 div{background:#fff;border:1.5px solid var(--k);border-radius:10px;padding:22px 34px;text-align:center;font-weight:700}
+.done2 svg{width:46px;height:46px;display:block;margin:0 auto 8px}.done2 path{stroke:#000;stroke-width:4;fill:none;stroke-dasharray:50;stroke-dashoffset:50}.done2.show path{animation:tick .3s .1s forwards}@keyframes tick{to{stroke-dashoffset:0}}
+/* resume sheet */
+.s{--f:Inter,Arial,sans-serif;width:210mm;min-height:297mm;background:#fff;color:#000;padding:14mm;font:10pt/1.42 var(--f);display:block}
+.s h1{font-size:27pt;margin:0;line-height:1.05;font-weight:800;letter-spacing:-.5px}
+.s .jt{font-size:12pt;color:var(--a);margin:4px 0 6px}.s .ct{font-size:9pt;color:#000}.s .lk{color:var(--a);font-weight:700;font-size:10pt;margin-bottom:2px}
+.s section{margin-top:14px}.s h2{color:var(--a);font-size:9.5pt;text-transform:uppercase;letter-spacing:1.7px;font-weight:800;margin:0 0 8px;break-after:avoid}
+.s[data-h=rule] h2{border-bottom:3px solid var(--a);padding-bottom:3px}
+.s[data-h=ruled] h2{border-top:2px solid var(--a);border-bottom:2px solid var(--a);padding:3px 0}
+.s[data-h=bar] h2{border-left:6px solid var(--a);padding-left:9px;font-size:11pt}
+.s[data-h=classic] h2{text-align:center;border-bottom:1px solid var(--a);padding-bottom:3px;font-weight:600}
+.s[data-h=box] h2{border:1.5px solid var(--a);padding:3px 8px}
+.s[data-h=shade] h2{background:#ececec;padding:4px 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.s[data-h=invert] h2{background:#111;color:#fff;padding:3px 9px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.s[data-h=serif] h2{text-transform:none;letter-spacing:0;font-size:15pt;font-weight:400;font-style:italic;margin-bottom:10px}
+.s[data-h=heavy] h2{font-size:11pt;border-bottom:4px solid var(--a);padding-bottom:2px}
+.s .e{margin-bottom:9px;break-inside:avoid}.s .r{display:flex;justify-content:space-between;gap:10px}.s .r span{white-space:nowrap}
+.s .sb{font-weight:700;color:#000}.s ul{margin:3px 0 0;padding-left:16px}.s li{margin-bottom:2px}.s p{margin:0}
+.s a{color:inherit;text-decoration:underline}.bt a{color:#fff;text-decoration:none}.pbig a{text-decoration:none}.s .n{border-bottom:2px solid var(--a)}
+.tg{display:inline-block;background:#fff;color:var(--a);border:1px solid var(--a);padding:2px 9px;margin:0 5px 5px 0;font-size:9pt;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.br{display:grid;grid-template-columns:1fr 1.6fr 32px;gap:8px;align-items:center;margin-bottom:6px;font-size:9pt}
+.br i{height:7px;background:var(--al);display:block;-webkit-print-color-adjust:exact;print-color-adjust:exact}.br u{display:block;height:100%;background:var(--a)}.br em{font-style:normal;text-align:right}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 14px}
+.gt div{display:grid;grid-template-columns:2fr 1fr;border-bottom:1px solid #999;padding:3px 0}.gt div:first-child{font-weight:800;color:var(--a);border-bottom:2px solid var(--a)}
+.bx{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--a);border-top:1px solid var(--a)}.bx span{border-right:1px solid var(--a);border-bottom:1px solid var(--a);padding:5px 8px}
+.cds{display:grid;gap:8px}.c3{grid-template-columns:repeat(3,1fr)}.c2{grid-template-columns:1fr 1fr}
+.cd{border:1.5px solid var(--a);border-radius:8px;padding:9px;break-inside:avoid}.cd b{display:block;margin-bottom:3px}.cd span{font-size:9pt}
+.two{display:grid;grid-template-columns:30% 1fr;padding:0}.two aside{padding:14mm 7mm}.two main{padding:14mm 10mm 14mm 9mm}
+.ux{grid-template-columns:27% 1fr}.ux aside{background:#f3f4f6;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}.ux main{padding:16mm 12mm 14mm 12mm}.ux .ph{color:var(--a)}.s[data-h=thin] h2{border-bottom:1px solid var(--a);padding-bottom:3px}
+.ph{width:34mm;height:34mm;border-radius:50%;border:3px solid currentColor;display:grid;place-items:center;font-size:26pt;font-weight:800;margin:0 auto 16px}
+.sd{margin-bottom:14px;font-size:9pt}.sd h3{font-size:9pt;letter-spacing:1.6px;text-transform:uppercase;border-bottom:2px solid currentColor;padding-bottom:3px;margin:0 0 8px}.sd div{margin-bottom:3px;word-break:break-word}
+.xl{font-size:34pt!important}.pbig{font-size:9.5pt;font-weight:600;border:1.5px solid var(--a);color:var(--a);border-radius:4px;display:inline-block;padding:3px 10px;margin:4px 0 6px}
+.gh{padding:14mm 14mm 8mm;border-bottom:8px solid var(--a)}.xxl{font-size:46pt!important;text-transform:uppercase;letter-spacing:-1.5px!important;font-weight:900!important}
+.tl{letter-spacing:5px;font-size:10pt;font-weight:700;margin:6px 0 12px}.bt{display:inline-block;background:#000;color:#fff;padding:7px 18px;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.gd{display:block;padding:0}.gd .two{grid-template-columns:32% 1fr}.gd aside{background:#000;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ctr{text-align:center}.ctr .hd{border-bottom:1px solid var(--a);padding-bottom:8px}
+.dah{border-bottom:4px solid var(--a);padding-bottom:8px}.ach{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.ach div{border:2px solid var(--a);border-radius:6px;padding:8px;text-align:center}.ach div:first-child{border-width:3px}.ach b{color:var(--a)}.ach b{display:block;font-size:22pt;line-height:1}
+.big2{font-size:12.5pt;line-height:1.6}.wsl div{padding:6px 0;border-bottom:1px solid #bbb;font-family:Georgia,serif;font-size:11pt}
+.gd aside .br i{background:#444}.gd aside .br u{background:#fff}.gd .sd h3{color:#fff;border-color:#fff}.gd aside .tg{background:#000;color:#fff;border-color:#fff}.gd .ph{border-color:#fff;color:#fff}.hint{color:#000;text-align:center;padding-top:90mm}
+@media(max-width:900px){.land,.app{grid-template-columns:1fr}.land{padding:40px 16px}.form{position:static;max-height:none}.bar{padding:10px 14px}.pv{padding:12px}}
+@media print{@page{size:A4;margin:0}#intro,.tb,.land,.form,.ats,.done2,.msg,.ft{display:none!important}body,.app{background:#fff;display:block}.pv{padding:0}.stage{opacity:1!important;transform:none!important}.paper{box-shadow:none!important;transform:none!important}.s{zoom:1!important}.hint{display:none}}
+</style></head><body class="pre">
+<div id="intro"><div class="iw"><div class="iname" id="iname"></div><div class="ib"><i id="ibf"></i></div></div></div>
+<div class="tb"><div class="bar"><div class="brand">ResumeInTwo</div>
+<label class="cs" style="margin:0"><input type="checkbox" id="consent"> I agree my details will be saved</label>
+<button class="btn p" id="dl" disabled>Download PDF</button></div>
+<div class="pg"><div class="tr"><div class="fl" id="fill"></div></div><span id="pct">0% complete</span></div><div class="msg" id="msg"></div></div>
+
+<div class="land"><div>
+<div class="hb">ResumeInTwo</div>
+<h1>No Prompt. Just <span class="bl">Resume.</span></h1>
+<p class="hi">Build a professional resume in 2 minutes. No prompt, no chat, just fill the form and download your PDF.</p>
+<div class="steps"><div><i>1</i>Select Your Field</div><div><i>2</i>Fill the Form</div><div><i>3</i>Download PDF</div></div>
+<button class="btn p big" id="start">Start Making Resume — Free</button>
+<div class="trust"><span><b>Free, No Login, No Prompt Needed</b></span><span><b>10 Field Templates</b></span><span><b>A4 PDF, ATS-Friendly</b></span></div>
+</div><div class="mbox" id="minibox"><div id="mini"></div></div></div>
+
+<div class="app" id="builder"><div class="form" id="form"></div>
+<div class="pv"><div class="ats" id="ats"></div><div id="pvbox"><div class="stage" id="stage"><div class="paper"><div class="s" id="sheet"></div></div></div></div></div></div>
+<div class="done2" id="done"><div><svg viewBox="0 0 52 52"><path d="M12 27 L22 37 L41 15"/></svg>Resume Downloaded</div></div>
+
+<footer class="ft"><div><b>ResumeInTwo</b></div><div>Made by Bhavy Patel</div><div>Contact: <a href="mailto:bhavypatelwebstudio@gmail.com">bhavypatelwebstudio@gmail.com</a></div></footer>
+<script>
+// Intro: black name, then blue fills letter by letter (90ms each), then fades into the homepage
+(function(){var w="ResumeInTwo",n=document.getElementById("iname"),b=document.getElementById("ibf"),it=document.getElementById("intro"),L=[];
+ function done(){it.classList.add("out");document.body.classList.remove("pre");setTimeout(function(){it.style.display="none"},300)}
+ try{for(var i=0;i<w.length;i++){var s=document.createElement("span");s.textContent=w[i];s.setAttribute("data-c",w[i]);n.appendChild(s);L.push(s)}
+  L.forEach(function(s,i){setTimeout(function(){s.classList.add("on");b.style.width=((i+1)/w.length*100)+"%"},150+i*90)});
+  setTimeout(done,150+w.length*90+300)}catch(x){done()}
+ setTimeout(done,3000)})();
+/* ============ CONFIG: paste your Supabase keys here ============ */
+const SUPABASE_URL="PASTE_YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY="PASTE_YOUR_SUPABASE_ANON_KEY";
+/* =============================================================== */
+// Each field: icon letter, one-line description, auto job title, skill suggestions
+const FD={
+"Web Developer":{i:"W",d:"Clean single column, projects first",jt:"Junior Web Developer",sk:"HTML,CSS,JavaScript,React,Git,Node.js,REST APIs,Responsive Design"},
+"UI/UX Designer":{i:"U",d:"Black sidebar, case study cards",jt:"UI/UX Designer",sk:"Figma,Wireframing,Prototyping,User Research,Design Systems,Usability Testing,Adobe XD"},
+"Data Analyst":{i:"D",d:"Table style, education first",jt:"Data Analyst",sk:"Excel,SQL,Python,Power BI,Tableau,Pandas,Statistics,Data Cleaning"},
+"Digital Marketing":{i:"M",d:"Modern, skill bars, campaign boxes",jt:"Digital Marketing Executive",sk:"SEO,Google Ads,Social Media,Email Marketing,Google Analytics,Content Strategy"},
+"Teacher":{i:"T",d:"Classic formal, Georgia serif",jt:"Teacher",sk:"Subject Knowledge,Communication,Lesson Planning,Classroom Management,Assessment"},
+"Accountant":{i:"A",d:"Formal, boxed skill tables",jt:"Accountant",sk:"Tally,GST Filing,Bookkeeping,Excel,Taxation,Auditing,Financial Reporting"},
+"Graphic Designer":{i:"G",d:"Bold type, sidebar, 2x2 work grid",jt:"Graphic Designer",sk:"Photoshop,Illustrator,Canva,Branding,Typography,Layout Design"},
+"Content Writer":{i:"C",d:"Text-focused, serif, writing samples",jt:"Content Writer",sk:"SEO Writing,Blogging,Copywriting,Editing,Research,Proofreading"},
+"Sales":{i:"S",d:"Bold highlights boxes, results",jt:"Sales Executive",sk:"Negotiation,CRM,Communication,Lead Generation,Cold Calling,Client Relations"},
+"HR":{i:"H",d:"Centered, shaded section bars",jt:"HR Executive",sk:"Recruitment,Payroll,Employee Relations,Onboarding,HRMS,Interviewing"}};
+// Resume accent: black for every field (resume is black and white); l = light grey track
+const PH=new Set(["UI/UX Designer","Graphic Designer"]);
+const PAL=Object.fromEntries(Object.keys(FD).map(k=>[k,{a:"#000000",l:"#E5E7EB",t:"#fff"}]));
+// Fictional sample people, one per field: name, email name, summary, company, start, 4 bullets, degree, college, year, skills, 4 project lines, certificate, interests, city
+const PEOPLE={
+"Web Developer":["Aarav Sharma","aarav","Front-end developer who builds fast, accessible websites with HTML, CSS and JavaScript. Enjoys turning designs into clean, reusable components and working closely with designers and back-end developers.","Pixel Craft Studio","Jun 2022","Built responsive client websites from design files|Created reusable React components used across five projects|Improved page speed by compressing images and splitting scripts|Fixed cross-browser bugs and wrote clear documentation","B.Sc. Information Technology","Westside College of Science","2022","HTML,CSS,JavaScript,React,Node.js,Git","Recipe Finder app using a public API with search and filters|Personal portfolio website with a responsive layout|To-do list app with local storage|Weather dashboard built with JavaScript and fetch","Responsive Web Design – freeCodeCamp","Web Design | Open Source | Hackathons | Photography","Pune"],
+"UI/UX Designer":["Ananya Verma","ananya","Product designer who turns user research into simple, usable interfaces. Experience with mobile apps, design systems and usability testing, and a habit of explaining design choices clearly.","Northwind Labs","Feb 2022","Designed mobile app flows from wireframes to final prototypes|Ran usability tests with ten users and fixed the top issues|Built a shared component library in Figma|Presented design decisions to developers and managers","B.Des. Interaction Design","Riverside Institute of Design","2021","Figma,Wireframing,Prototyping,User Research,Design Systems","Travel booking app redesign with a shorter checkout flow|Banking app case study covering research and prototypes|Design system for a student learning platform|Accessibility audit and redesign of a charity website","Google UX Design Certificate – Coursera","Sketching | Typography | Photography | Travel","Mumbai"],
+"Data Analyst":["Rohan Mehta","rohan","Analyst who cleans data, writes clear SQL queries and builds dashboards that help teams decide faster. Comfortable explaining numbers to people who are not technical.","Metric Insights Pvt Ltd","Aug 2021","Wrote SQL queries that cut weekly report time by 30%|Built Power BI dashboards used by a team of 25 people|Cleaned and checked data of 50,000+ rows using Python|Presented monthly findings to the management team","B.Sc. Statistics","Lakeview College","2021","Excel,SQL,Python,Power BI,Data Cleaning","Sales dashboard with monthly trends and region filters|Customer churn analysis using Python and Pandas|Survey data cleaning and summary report|Excel model to forecast quarterly demand","Data Analytics Certificate – Coursera","Chess | Open Data | Reading | Cricket Statistics","Bengaluru"],
+"Digital Marketing":["Neha Shah","neha","Marketing executive focused on search, paid ads and social media growth for small and medium brands. Likes testing ideas and reading the numbers before making the next move.","BrightReach Media","Mar 2022","Managed Google Ads campaigns for five clients|Grew a client's Instagram following by 40% in six months|Wrote SEO blog posts that improved search rankings|Prepared monthly analytics reports for clients","BBA Marketing","Harbor College of Business","2021","SEO,Google Ads,Social Media,Content Marketing,Analytics","Local cafe campaign that increased weekend visits|Email series for an online fitness brand|Search ads test for a furniture store|Instagram reels plan for a clothing label","Google Ads Certification","Branding | Photography | Podcasts | Travel Blogging","Jaipur"],
+"Teacher":["Kavita Joshi","kavita","Dedicated secondary school teacher with strong subject knowledge and a calm, clear teaching style. Focused on helping every student understand and enjoy the subject.","Saraswati Vidyalaya","Jun 2018","Taught mathematics to classes 8 to 10 with weekly practice tests|Prepared lesson plans linked to the school curriculum|Held extra sessions for students who needed support|Organised an inter-class quiz and a maths club","B.Ed. Mathematics","Nehru Teachers College","2018","Subject Knowledge,Classroom Management,Communication,Lesson Planning","Maths club with weekly puzzle sessions|Student progress tracker built in a spreadsheet|Science fair project guide for class 9|Reading circle for junior students","CTET Qualified","Reading | Puzzles | Gardening | Classical Music","Nashik"],
+"Accountant":["Vikram Iyer","vikram","Accountant with experience in bookkeeping, GST filing and monthly reporting for small businesses. Careful with details and always meets filing deadlines.","Shah and Associates","Jul 2020","Managed accounts of 50+ small business clients|Filed monthly GST returns before the due date|Reconciled bank statements and prepared trial balances|Helped clients with income tax filing each year","B.Com. Accounting","Capital College of Commerce","2020","Tally,GST,MS Excel,Bookkeeping,Tax Filing","Expense tracker template in Excel for small shops|Audit support checklist for year-end closing|Payroll sheet with automatic tax calculation|GST reconciliation report for a retail client","Tally Prime Certification","Chess | Cycling | Personal Finance | Reading","Chennai"],
+"Graphic Designer":["Isha Kapoor","isha","Visual designer creating bold brand identities, posters and social media graphics with strong typography. Enjoys turning a rough idea into a finished design that people remember.","Inkwell Creative","Jan 2022","Designed logos and brand kits for small businesses|Created weekly posters and social media graphics|Prepared print-ready files for vendors|Worked with clients to turn ideas into final designs","B.F.A. Applied Arts","Rosewood School of Art","2021","Photoshop,Illustrator,Canva,Branding,Typography","Kora Coffee brand identity with logo and packaging|Music festival poster series|Book cover collection for a local publisher|Menu and signage design for a restaurant","Adobe Illustrator Certificate","Sketching | Photography | Street Art | Film Posters","Delhi"],
+"Content Writer":["Dev Malhotra","dev","Writer who creates clear, well-researched articles and web copy. Comfortable with SEO, editing and adjusting tone for different readers.","WordSmith Digital","Apr 2021","Wrote blog posts and landing page copy for technology clients|Researched keywords and optimised articles for search|Edited articles from freelance writers|Published 80+ articles that brought steady monthly traffic","B.A. English","Greenfield Arts College","2021","SEO Writing,Blogging,Copywriting,Research,Editing","How to Start a Small Business Website in a Weekend|Ten Simple Habits for Better Remote Work|A Beginner Guide to Search Engine Optimisation|Why Every Student Should Keep a Reading Journal","Content Marketing Certification – HubSpot","Books | Poetry | Film Reviews | Travel Writing","Kolkata"],
+"Sales":["Karan Malik","karan","Sales executive with a record of building client relationships and closing deals through clear, honest communication. Motivated by targets and long-term customers.","Apex Solutions","May 2021","Achieved 120% of the quarterly sales target|Handled a portfolio of 40+ business clients|Generated new leads through calls, meetings and referrals|Recorded all deals in CRM and followed up every week","BBA Sales and Marketing","Summit Business College","2021","Negotiation,CRM,Lead Generation,Communication,Closing Deals","Client referral drive that added 15 new accounts|Sales pitch deck for a software product|Weekly pipeline report for the team|Customer feedback survey and action plan","Sales Fundamentals – LinkedIn Learning","Cricket | Public Speaking | Networking | Cycling","Hyderabad"],
+"HR":["Priya Singh","priya","HR professional experienced in recruitment, onboarding and payroll, with a people-first approach and a calm way of handling employee concerns.","TalentBridge Consulting","Sep 2021","Screened 300+ candidates and scheduled interviews|Ran onboarding for new joiners every month|Processed monthly payroll for 120 employees|Maintained employee records in the HRMS","MBA Human Resources","Crestview Management Institute","2021","Recruitment,Payroll,Employee Relations,Onboarding,HRMS","Onboarding handbook for new employees|Employee satisfaction survey and report|Interview scorecard template for hiring managers|Leave policy guide for a growing team","HR Management Certificate","Mentoring | Reading | Yoga | Volunteering","Lucknow"]};
+// Builds the full sample resume for one field (smp = true means it is still untouched sample data)
+const SMP=f=>{const a=PEOPLE[f],i=Object.keys(FD).indexOf(f),s=blank(f);
+ s.smp=true;s.summary=a[2];s.skills=a[9].split(",");s.ce=a[11];s.it=a[12];s.lg="English, French";
+ s.st="Quick learner who picks up new tools fast\nReliable and good at meeting deadlines\nWorks well independently and in a team";
+ s.exp=[{title:FD[f].jt,company:a[3],start:a[4],end:"",cur:true,b:a[5].split("|").join("\n")}];
+ s.edu=[{degree:a[6],college:a[7],year:a[8],score:""}];s.proj=[{name:"",link:"",b:a[10].split("|").join("\n")}];
+ s.p={name:a[0],title:FD[f].jt,email:a[1]+"@example.com",phone:"+91 90000 0000"+i,city:a[13],linkedin:"linkedin.com/in/"+a[1],github:"github.com/"+a[1],portfolio:a[1]+"-portfolio.example.com"};return s};
+const blank=f=>({field:f||"Web Developer",auto:true,p:{name:"",title:"",email:"",phone:"",city:"",linkedin:"",github:"",portfolio:""},summary:"",exp:[{title:"",company:"",start:"",end:"",cur:false,b:""}],edu:[{degree:"",college:"",year:"",score:""}],skills:[],proj:[{name:"",b:"",link:""}],ce:"",st:"",it:"",lg:""});
+let S=SMP("Web Developer"),downloaded=false,typing=false;
+try{localStorage.removeItem("rm_v2");const v=JSON.parse(localStorage.getItem("rm_v3")||"null");if(v&&v.p&&FD[v.field])S=Object.assign(blank(),v)}catch(x){}
+const open=new Set(["personal"]),$=id=>document.getElementById(id);
+const e=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const lines=t=>(t||"").split("\n").map(x=>x.trim()).filter(Boolean);
+const ul=(t,h)=>{const a=lines(t);return a.length?`<ul>${a.map(x=>`<li>${h?e(x).replace(/\d[\d.,]*[%+]?/g,m=>`<b class=n>${m}</b>`):e(x)}</li>`).join("")}</ul>`:""};
+// skills may carry a level like "Python:90"; otherwise a default level is used for bars
+const sk=a=>a.map((s,i)=>{const m=s.match(/^(.*):(\d{1,3})$/);return m?{n:m[1],v:Math.min(100,+m[2])}:{n:s,v:Math.max(60,92-4*i)}});
+const getP=(o,p)=>p.split(".").reduce((a,k)=>a&&a[k],o);
+const setP=(o,p,v)=>{const k=p.split("."),l=k.pop();k.reduce((a,x)=>a[x],o)[l]=v};
+
+// ---------- resume painter: builds a different layout for every field ----------
+function paint(el,s){
+ const p=s.p,f=s.field,K=sk(s.skills),all=s.proj.flatMap(x=>lines(x.b));
+ const U=u=>{u=String(u||"").trim();return /^https?:\/\//i.test(u)?u:"https://"+u},A=(u,t)=>`<a href="${e(U(u))}">${t}</a>`;
+ const lk=[p.github&&A(p.github,"GitHub"),p.portfolio&&A(p.portfolio,"Portfolio")].filter(Boolean),ct=[p.city,p.phone,p.email].filter(Boolean).map(e).concat(p.linkedin?[A(p.linkedin,"LinkedIn")]:[]);
+ const nm=e(p.name||"Your Name"),tt=p.title?`<div class=jt>${e(p.title)}</div>`:"",ini=(p.name||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+ const line=a=>a.join("  |  ");
+ const S_=(t,h)=>h?`<section><h2>${t}</h2>${h}</section>`:"",D=(t,h)=>h?`<div class=sd><h3>${t}</h3>${h}</div>`:"";
+ const cds=n=>all.slice(0,n).map(x=>{const w=x.split(" ");return `<div class=cd><b>${e(w.slice(0,4).join(" "))}</b><span>${e(w.slice(4).join(" "))}</span></div>`}).join("");
+ const B={
+  sum:()=>s.summary.trim()?`<p>${e(s.summary)}</p>`:"",
+  exp:h=>s.exp.filter(x=>x.title||x.company).map(x=>`<div class=e><div class=r><b>${e(x.title)}</b><span>${e(x.start)}${x.start&&(x.cur||x.end)?" – ":""}${x.cur?"Present":e(x.end)}</span></div><div class=sb>${e(x.company)}</div>${ul(x.b,h)}</div>`).join(""),
+  edu:()=>s.edu.filter(x=>x.degree||x.college).map(x=>`<div class=e><b>${e(x.degree)}</b><div class=r><span style="white-space:normal">${e(x.college)}</span><span>${e(x.year)}</span></div>${x.score?`<div>${e(x.score)}</div>`:""}</div>`).join(""),
+  tags:()=>K.map(k=>`<span class=tg>${e(k.n)}</span>`).join(""),
+  bars:()=>K.map(k=>`<div class=br><span>${e(k.n)}</span><i><u style="width:${k.v}%"></u></i><em>${k.v}%</em></div>`).join(""),
+  g3:()=>K.length?`<div class=g3>${K.map(k=>`<span>${e(k.n)}</span>`).join("")}</div>`:"",
+  tbl:()=>K.length?`<div class=gt><div><span>Skill</span><span>Level</span></div>${K.map(k=>`<div><span>${e(k.n)}</span><span>${k.v>=85?"Advanced":k.v>=70?"Intermediate":"Basic"}</span></div>`).join("")}</div>`:"",
+  bx:()=>K.length?`<div class=bx>${K.map(k=>`<span>${e(k.n)}</span>`).join("")}</div>`:"",
+  pj:()=>s.proj.filter(x=>x.name||x.b.trim()).map(x=>`<div class=e>${x.name?`<div class=r><b>${e(x.name)}</b><span>${e(x.link)}</span></div>`:""}${ul(x.b)}</div>`).join(""),
+  ce:()=>ul(s.ce),st:()=>ul(s.st),it:()=>s.it.trim()?`<p>${e(s.it)}</p>`:"",lg:()=>s.lg.trim()?`<p>${e(s.lg)}</p>`:""};
+ const REST=S_("Certifications",B.ce())+S_("Key Strengths",B.st())+S_("Interests",B.it())+S_("Languages",B.lg());
+ const hd=(x="",c="")=>`<div class="hd ${c}">${x}<h1>${nm}</h1>${tt}<div class=ct>${line([...ct,...lk])}</div></div>`;
+ const side=(extra)=>`${s.photo?`<div class=ph style="padding:0;overflow:hidden"><img alt="" src="${s.photo}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div class=ph>${e(ini)}</div>`}${D("Contact",[...ct,...(p.portfolio&&p.github?[A(p.github,"GitHub")]:[])].map(x=>`<div>${x}</div>`).join(""))}${extra}`;
+ const L={
+ "Web Developer":["","rule","Inter,Arial,sans-serif",()=>`<div class=hd><h1>${nm}</h1>${tt}<div class=lk>${line(lk)}</div><div class=ct>${line(ct)}</div></div>`+S_("Summary",B.sum())+S_("Projects",B.pj())+S_("Experience",B.exp())+S_("Technical Skills",B.g3())+S_("Education",B.edu())+REST],
+ "UI/UX Designer":["two ux","thin","Inter,Arial,sans-serif",()=>`<aside>${side(D("Skills",B.bars())+D("Tools",["Figma","Adobe XD","Sketch"].map(x=>`<span class=tg>${x}</span>`).join(""))+D("Languages",B.lg())+D("Interests",B.it()))}</aside><main><h1 class=xl>${nm}</h1>${tt}${(p.portfolio||p.github)?`<div class=pbig>${p.portfolio?A(p.portfolio,"Portfolio"):A(p.github,"GitHub")}</div>`:""}${S_("About",B.sum())}${S_("Tools",["Figma","Adobe XD","Sketch"].map(x=>`<span class=tg>${x}</span>`).join(""))}${S_("Case Studies",`<div class="cds c3">${cds(3)}</div>`)}${S_("Experience",B.exp())}${S_("Education",B.edu())}${S_("Certifications",B.ce())}${S_("Key Strengths",B.st())}</main>`],
+ "Data Analyst":["","ruled","Inter,Arial,sans-serif",()=>`<div class=dah><h1>${nm}</h1>${tt}<div class=ct>${line([...ct,...lk])}</div></div>`+S_("Education",B.edu())+S_("Summary",B.sum())+S_("Skills",B.tbl())+S_("Experience",B.exp(1))+S_("Projects & Coursework",B.pj())+REST],
+ "Digital Marketing":["","bar","Inter,Arial,sans-serif",()=>hd()+S_("Summary",B.sum())+S_("Skills",`<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 26px">${B.bars()}</div>`)+S_("Experience",B.exp())+S_("Campaigns & Coursework",`<div class="cds c3">${cds(3)}</div>`)+S_("Education",B.edu())+REST],
+ "Teacher":["ctr","classic","Georgia,'Times New Roman',serif",()=>hd()+S_("Education",B.edu())+S_("Experience",B.exp())+S_("Summary",B.sum())+S_("Skills",`<p>${e(K.map(k=>k.n).join(", "))}</p>`)+S_("Projects & Coursework",B.pj())+REST],
+ "Accountant":["","box","'Times New Roman',Georgia,serif",()=>`<div class=dah style="border-bottom:3px double var(--a)"><h1>${nm}</h1>${tt}<div class=ct>${line([...ct,...lk])}</div></div>`+S_("Education",B.edu())+S_("Summary",B.sum())+S_("Experience",B.exp(1))+S_("Skills",B.bx())+S_("Projects & Coursework",B.pj())+REST],
+ "Graphic Designer":["gd","invert","Inter,Arial,sans-serif",()=>`<div class=gh><h1 class=xxl>${nm}</h1><div class=tl>CREATIVE | DEDICATED | PASSIONATE</div>${(p.portfolio||p.github)?`<span class=bt>${p.portfolio?A(p.portfolio,"Portfolio"):A(p.github,"GitHub")}</span>`:""}</div><div class="two"><aside>${side(D("Profile",B.sum())+D("Skills",B.bars())+D("Interests",s.it.split("|").map(x=>x.trim()).filter(Boolean).map(x=>`<span class=tg>${e(x)}</span>`).join("")))}</aside><main>${S_("About Me",s.st.trim()?`<p>${e(lines(s.st).join(". ")+".")}</p>`:"")}${S_("Experience",B.exp())}${S_("Education",B.edu())}${S_("Selected Work",`<div class="cds c2">${cds(4)}</div>`)}${S_("Certifications",B.ce())}${S_("References","<p>Available on request.</p>")}</main></div>`],
+ "Content Writer":["","serif","Georgia,'Times New Roman',serif",()=>hd()+S_("About",s.summary.trim()?`<p class=big2>${e(s.summary)}</p>`:"")+S_("Writing Samples",`<div class=wsl>${all.slice(0,3).map(x=>`<div>${e(x.split(" ").slice(0,9).join(" "))}</div>`).join("")}</div>`)+S_("Experience",B.exp())+S_("Skills",B.tags())+S_("Education",B.edu())+REST],
+ "Sales":["","heavy","Inter,Arial,sans-serif",()=>`<div class=dah><h1>${nm}</h1>${tt}<div class=ct>${line([...ct,...lk])}</div></div>`+`<div class=ach><div><b>${K.length}</b>Skills</div><div><b>${s.exp.filter(x=>x.title).length}</b>Roles</div><div><b>${all.length}</b>Projects</div><div><b>${lines(s.ce).length}</b>Certificates</div></div>`+S_("Summary",B.sum())+S_("Experience",B.exp(1))+S_("Skills",B.g3())+S_("Education",B.edu())+S_("Projects & Coursework",B.pj())+REST],
+ "HR":["ctr","shade","Inter,Arial,sans-serif",()=>hd()+S_("Education",B.edu())+S_("Summary",B.sum())+S_("Experience",B.exp())+S_("Skills",B.tags())+S_("Projects & Coursework",B.pj())+REST]
+ }[f];
+ const empty=!p.name&&!s.summary&&!s.skills.length&&!s.exp[0].title;
+ const P=PAL[f];el.style.setProperty("--a",P.a);el.style.setProperty("--al",P.l);el.style.setProperty("--t",P.t);el.className="s "+L[0];el.dataset.h=L[1];el.style.setProperty("--f",L[2]);
+ el.innerHTML=empty?`<p class=hint>Click "Load Sample Resume" or start typing.<br>Your resume appears here.</p>`:L[3]();
+}
+const fit=()=>{[["sheet","pvbox"],["mini","minibox"]].forEach(([a,b])=>{$(a).style.zoom=Math.min(1,$(b).clientWidth/794)})};
+addEventListener("resize",fit);
+
+// ---------- ATS score ----------
+function ats(s){const p=s.p,n=s.skills.length,r=[];
+ const A=(ok,pt,tip)=>r.push({g:ok?0:pt,tip,pt});
+ A(p.name.trim(),8,"Add your name");A(/@/.test(p.email),8,"Add a valid email");A(p.phone.trim(),6,"Add your phone");A(p.city.trim(),4,"Add your city");A(p.title.trim(),6,"Add a job title");A(p.linkedin||p.github||p.portfolio,4,"Add a LinkedIn or GitHub link");
+ A(s.summary.length>=120,10,"Write a summary of 120+ characters");A(s.exp.some(x=>lines(x.b).length>=3),16,"Add 3+ bullet points in Experience");A(s.edu.some(x=>x.degree&&x.college),10,"Add your education");
+ A(s.proj.some(x=>x.b.trim()),6,"Add projects");A(s.ce.trim(),4,"Add a certification");A(s.st.trim()||s.it.trim(),4,"Add key strengths or interests");
+ const sg=Math.max(0,14-2*n),score=100-r.reduce((a,x)=>a+x.g,0)-sg;
+ const tips=r.filter(x=>x.g).map(x=>x);if(sg)tips.push({g:sg,tip:`Add ${Math.ceil(sg/2)} more skills`});tips.sort((a,b)=>b.g-a.g);
+ return {score,tip:tips.length?`${tips[0].tip} to reach ${Math.min(100,score+tips[0].g)}+`:"Great! Your resume is ATS-ready."}}
+// ---------- progress + ticks ----------
+function stats(){const p=S.p;const d={personal:p.name&&p.email&&p.phone,summary:S.summary.length>=50,exp:S.exp.some(x=>x.title&&x.company),edu:S.edu.some(x=>x.degree&&x.college),skills:S.skills.length>=3,proj:S.proj.some(x=>x.b.trim()),more:S.ce||S.st||S.it||S.lg};
+ let n=0;n+=3*["name","title","email","phone","city"].filter(k=>p[k].trim()).length+(d.summary?10:0)+(d.exp?20:0)+(d.edu?15:0)+Math.min(15,S.skills.length*5)+(d.proj?10:0)+(d.more?5:0)+(downloaded?10:0);return{d,n:Math.min(100,n)}}
+function refresh(){const {d,n}=stats();$("fill").style.width=n+"%";$("fill").style.background=PAL[S.field].a;
+ $("pct").textContent=n+"% complete — "+(n<30?"good start":n<60?"keep going":n<85?"nice progress":n<100?"almost there!":"ready to send!");
+ document.querySelectorAll(".sec").forEach(x=>x.classList.toggle("done",!!d[x.dataset.s]));
+ const a=ats(S);$("ats").innerHTML=`<div>Your resume ATS Score:<br><b>${a.score}/100</b></div><span>${e(a.tip)}</span><span class=sv>Auto-saved in this browser</span>`}
+let tm,sv;
+function update(){paint($("sheet"),S);fit();refresh();const st=$("stage");st.style.opacity=".85";clearTimeout(tm);tm=setTimeout(()=>st.style.opacity="",130);clearTimeout(sv);sv=setTimeout(()=>{try{localStorage.setItem("rm_v3",JSON.stringify(S))}catch(x){}},400)}
+
+// ---------- form ----------
+const inp=(l,p,t="text")=>`<label>${l}</label><input type="${t}" data-p="${p}" value="${e(getP(S,p))}">`;
+const ta=(l,p,r=3)=>`<label>${l}</label><textarea rows="${r}" data-p="${p}">${e(getP(S,p))}</textarea>`;
+const sec=(id,t,h)=>`<div class="sec ${open.has(id)?"open":""}" data-s="${id}"><button type="button">${t}<span class=tk></span><span class=ar>&#9656;</span></button><div class=body><div>${h}</div></div></div>`;
+function renderForm(){
+ const T=FD[S.field];
+ const ex=S.exp.map((x,i)=>`<div class=entry><div class=hd2>Experience ${i+1}${S.exp.length>1?`<button class=link data-del="exp:${i}">Remove</button>`:""}</div>${inp("Job Title",`exp.${i}.title`)}${inp("Company",`exp.${i}.company`)}<div class=row2><div>${inp("Start Date",`exp.${i}.start`)}</div><div><label>End Date</label><input type=text data-p="exp.${i}.end" value="${e(x.end)}" ${x.cur?"disabled":""}></div></div><label class=chk><input type=checkbox data-p="exp.${i}.cur" ${x.cur?"checked":""}> Currently working here</label>${ta("Bullet points (one per line)",`exp.${i}.b`,5)}</div>`).join("");
+ const ed=S.edu.map((x,i)=>`<div class=entry><div class=hd2>Education ${i+1}${S.edu.length>1?`<button class=link data-del="edu:${i}">Remove</button>`:""}</div>${inp("Degree",`edu.${i}.degree`)}${inp("College",`edu.${i}.college`)}<div class=row2><div>${inp("Year",`edu.${i}.year`)}</div><div>${inp("Percentage / CGPA",`edu.${i}.score`)}</div></div></div>`).join("");
+ const pr=S.proj.map((x,i)=>`<div class=entry><div class=hd2>Project ${i+1}${S.proj.length>1?`<button class=link data-del="proj:${i}">Remove</button>`:""}</div>${inp("Project Name (optional)",`proj.${i}.name`)}${ta("Bullet points (one per line)",`proj.${i}.b`,4)}${inp("Link",`proj.${i}.link`)}</div>`).join("");
+ const su=T.sk.split(",").filter(x=>!S.skills.includes(x)).map(x=>`<button type=button class=sug data-sug="${e(x)}">+ ${e(x)}</button>`).join("");
+ $("form").innerHTML=`<h3 class=t>Select Your Field</h3><div class=cards>${Object.keys(FD).map(k=>`<button type=button class="fc ${k==S.field?"on":""}" data-f="${k}" style="--ac:${PAL[k].a};--t:${PAL[k].t}"><span class=ic>${FD[k].i}</span><span><b>${k}</b><small>${FD[k].d}</small></span></button>`).join("")}</div>
+ <p class=note>Design changes as per your field.</p><div class=tools><button class=btn id=sample>Load Sample Resume</button><button class=btn id=clear>Clear All</button></div>
+ ${sec("personal","Personal Details",inp("Name","p.name")+inp("Job Title","p.title")+inp("Email","p.email","email")+inp("Phone","p.phone")+inp("City","p.city")+inp("LinkedIn (optional)","p.linkedin")+inp("GitHub (optional)","p.github")+inp("Portfolio Link (optional)","p.portfolio")+`<p class=note>Clickable links: paste the full link, for example https://github.com/yourname. The resume shows only the word LinkedIn, GitHub or Portfolio, and it opens your page when clicked.</p>`+(PH.has(S.field)?`<label>Add your photo (optional)</label><input type=file id=photo accept="image/*">${S.photo?`<button type=button class=link data-rp=1>Remove photo</button>`:""}<p class=note>Shown in the round photo spot of this resume style.</p>`:""))}
+ ${sec("summary","Professional Summary",ta("Summary","summary",5)+`<p class=note><span id=cc>${S.summary.length}</span> characters. Tip: Keep it under 3 lines.</p>`)}
+ ${sec("exp","Work Experience",ex+`<button class=btn data-add=exp>Add Experience</button>`)}
+ ${sec("edu","Education",ed+`<button class=btn data-add=edu>Add Education</button>`)}
+ ${sec("skills","Skills",`<label>Type a skill and press Enter</label><input type=text id=skin list=sl autocomplete=off><datalist id=sl>${T.sk.split(",").map(x=>`<option value="${e(x)}">`).join("")}</datalist><div class=tags>${S.skills.map((x,i)=>`<span class=tag>${e(x)}<button type=button data-rs=${i} aria-label="Remove">&times;</button></span>`).join("")}</div><label>Suggested for ${S.field}</label><div class=tags>${su}</div>`)}
+ ${sec("proj","Projects",pr+`<button class=btn data-add=proj>Add Project</button>`)}
+ ${sec("more","Certifications, Strengths, Interests",ta("Certifications (one per line)","ce",2)+ta("Key Strengths (one per line)","st",3)+inp("Interests (separate with |)","it")+inp("Languages","lg"))}
+ <p class=note style="margin-top:14px">Your details are saved only to improve this tool.</p>`;refresh()}
+function handle(el){const k=el.dataset.p,v=el.type=="checkbox"?el.checked:el.value;setP(S,k,v);S.smp=false;if(k=="p.title")S.auto=false;
+ if(el.type=="checkbox"){const x=el.closest(".entry").querySelector(`[data-p="${k.replace("cur","end")}"]`);x.disabled=v}
+ if(k=="summary"&&$("cc"))$("cc").textContent=v.length;update()}
+$("form").addEventListener("input",x=>{if(x.target.dataset.p)handle(x.target)});
+function setField(f){if(f==S.field)return;const st=$("stage");st.classList.add("sw");
+ setTimeout(()=>{if(S.smp){const ph=S.photo;S=SMP(f);S.photo=ph}else{S.field=f;if(S.auto)S.p.title=FD[f].jt}renderForm();update();st.classList.remove("sw")},200)}
+$("form").addEventListener("click",x=>{const t=x.target,h=t.closest(".sec>button"),c=t.closest("[data-f]");
+ if(c)return setField(c.dataset.f);
+ if(t.dataset.rp){S.photo="";renderForm();update();return}
+ if(h){const s=h.parentElement;s.classList.toggle("open");s.classList.contains("open")?open.add(s.dataset.s):open.delete(s.dataset.s);return}
+ if(t.dataset.add){S.smp=false;const k=t.dataset.add;S[k].push(blank()[k][0]);renderForm();update()}
+ if(t.dataset.del){S.smp=false;const [k,i]=t.dataset.del.split(":");S[k].splice(+i,1);renderForm();update()}
+ if(t.dataset.sug)addSk(t.dataset.sug);
+ if(t.dataset.rs!==undefined){S.smp=false;S.skills.splice(+t.dataset.rs,1);renderForm();update()}
+ if(t.id=="sample")loadSample();
+ if(t.id=="clear"&&confirm("Clear all fields?")){const f=S.field;S=blank(f);downloaded=false;renderForm();update()}});
+$("form").addEventListener("keydown",x=>{if(x.target.id=="skin"&&(x.key=="Enter"||x.key==",")){x.preventDefault();addSk(x.target.value)}});
+function addSk(v){v=v.replace(",","").trim();if(v&&!S.skills.includes(v)){S.smp=false;S.skills.push(v);renderForm();update();const i=$("skin");if(i)i.focus()}}
+
+// photo upload: crop to a small square so it stays light
+$("form").addEventListener("change",x=>{const f=x.target.files&&x.target.files[0];if(x.target.id!="photo"||!f)return;
+ const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),z=240,m=Math.min(im.width,im.height);c.width=c.height=z;
+  c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,z,z);S.photo=c.toDataURL("image/jpeg",.85);renderForm();update()};im.src=r.result};r.readAsDataURL(f)});
+// ---------- Load Sample: typing effect, field by field ----------
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function loadSample(){if(typing)return;typing=true;
+ const f=S.field,full=SMP(f);
+ S=blank(f);S.exp=[{...full.exp[0],b:"",title:"",company:"",start:"",cur:false}];S.proj=[{name:"",b:"",link:""}];downloaded=false;
+ ["personal","summary","exp","edu","proj","more"].forEach(k=>open.add(k));renderForm();update();
+ for(const el of [...$("form").querySelectorAll("[data-p]")]){const v=getP(full,el.dataset.p);
+  if(el.type=="checkbox"){el.checked=v;handle(el);continue}
+  if(!v)continue;const step=Math.max(3,Math.ceil(v.length/45));
+  for(let i=step;i<v.length;i+=step){el.value=v.slice(0,i);handle(el);await wait(14)}
+  el.value=v;handle(el)}
+ for(const k of full.skills){S.skills.push(k);renderForm();update();await wait(70)}
+ S.auto=true;S.smp=true;S.p.title=FD[S.field].jt;renderForm();update();typing=false}
+
+// ---------- download + Supabase ----------
+$("consent").addEventListener("change",x=>$("dl").disabled=!x.target.checked);
+const note=t=>{$("msg").textContent=t;$("msg").style.display=t?"block":"none"};
+$("dl").addEventListener("click",async()=>{if(!$("consent").checked)return;note("");
+ // Local save (works without Supabase): admin.html reads the same key
+ try{const k="resumeintwo_resumes";const all=JSON.parse(localStorage.getItem(k)||"[]");all.unshift({id:Date.now(),name:S.p.name,email:S.p.email,phone:S.p.phone,job_title:S.p.title,city:S.p.city,summary:S.summary,experience:S.exp,education:S.edu,skills:S.skills,created_at:new Date().toISOString()});localStorage.setItem(k,JSON.stringify(all.slice(0,200)))}catch(x){}
+ if(SUPABASE_URL.startsWith("http")&&!SUPABASE_ANON_KEY.startsWith("PASTE")){
+  try{const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+   const {error}=await db.from("resumes").insert({name:S.p.name,email:S.p.email,phone:S.p.phone,job_title:S.p.title,city:S.p.city,summary:S.summary,experience:S.exp,education:S.edu,skills:S.skills});if(error)throw error}
+  catch(x){note("Could not save to the database: "+(x.message||x)+". The PDF will still download.")}
+ }else note("Supabase keys are not set, so nothing was saved. The PDF will still download.");
+ downloaded=true;refresh();const d=$("done");d.classList.add("show");
+ setTimeout(()=>window.print(),450);setTimeout(()=>d.classList.remove("show"),1800)});   // print box: choose "Save as PDF"
+$("start").addEventListener("click",()=>$("builder").scrollIntoView({behavior:"smooth"}));
+
+// ---------- start ----------
+paint($("mini"),SMP("Web Developer"));
+renderForm();update();
+</script></body></html>
