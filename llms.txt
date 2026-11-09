@@ -1,0 +1,10 @@
+# ResumeInTwo
+
+> Free resume maker. No prompt. No login. Just resume.
+
+ResumeInTwo is a free web app that builds a professional resume in about 2 minutes: pick a field template, fill the form, preview live, and download a clean black-and-white A4 PDF. It includes an ATS score check and works without any login or chat.
+
+- Website: https://resumeintwo.netlify.app/
+- Features: 10 field templates, live form preview, A4 PDF download, ATS score check
+- Tech: HTML, CSS, JavaScript, Supabase, Netlify
+- Price: Free
